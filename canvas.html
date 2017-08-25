@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html ng-app="vida">
+<head><meta charset="utf-8">
+	<title></title>
+	<script src="angular.js"></script>
+</head>
+<style type="text/css">
+	.contenedor{
+		box-sizing:border-box;
+		float:left;
+		width:50%;
+		padding:10px;
+	}
+	.lienzo{ 
+		border:1px solid #d9d9d9;  
+	}
+	#lienzo1{float:right;}
+	#lienzo2{width:50%;float:left;}
+</style>
+<body>
+	<canvas id="micanvas" width="400" height="300" style="border: 1px solid;
+	box-shadow: 0 0 20px #000;
+	background: #fff;">
+	Este texto se muestra para los navegadores no compatibles con canvas.
+	<br>
+	Por favor, utiliza Firefox, Chrome, Safari u Opera.
+</canvas>
+<div ng-controller="controlador1" >
+	altura:<input id="sli_alt" type="range" min="20" max="120" step="1" ng-model="alt">
+	{{alt}}<br>
+	ancho:<input id="Sli_anch" type="range" min="20" max="120" step="1" ng-model="anch">
+	{{anch}}
+	<br>{{arr}}
+</div>
+<script type="text/javascript">
+
+
+	var miAplicacion = angular.module( 'vida' , [] )
+	miAplicacion.controller ( 'controlador1' , [ '$scope' , function($scope){
+		var arr=new Array();
+		$scope.arr=arr
+		$scope.anch=25
+		$scope.alt=25
+
+		for (var i = 0; i< $scope.anch; i++) {
+			$scope.arr[i]=Math.floor(i);
+		}
+		$scope.changeSize = function(){
+
+			for (var i = 0; i< $scope.anch; i++) {
+				$scope.arr[i]=Math.floor(i);
+			}
+		}
+
+		$scope.$watch($scope.changeSize)
+
+
+		
+	} ] )
+
+		//acaba angular inicia canvas
+		var canvas = document.getElementById('micanvas');
+		var contexto = canvas.getContext('2d');
+
+		contexto.fillStyle = '#D00000';
+		contexto.fillRect(0,0,30,20);
+		contexto.fillStyle='#000000'
+		contexto.fillStyle = 'rgb(16,214,85,0.8)';
+		contexto.fillRect(20,0,20,20);
+	//cambio el color a amarillo con un poco de transparencia
+	contexto.fillStyle = '#1500D0';
+	//dibuja linea
+	contexto.moveTo(0,20);
+	contexto.lineTo(180,20);
+	contexto.strokeStyle = 'rgb(0,0,0,1)';
+	contexto.moveTo(10,15);
+	contexto.lineTo(180,15);
+	contexto.stroke();
+	//pinto un rectángulo amarillo semitransparente
+	contexto.fillRect(35,35,50,50);
+	
+	function getRandom() {
+		return Math.random();
+	}
+
+
+</script>
+</body>
+</html>
