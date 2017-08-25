@@ -18,7 +18,7 @@
 	#lienzo2{width:50%;float:left;}
 </style>
 <body>
-	<canvas id="micanvas" width="400" height="300" style="border: 1px solid;
+	<canvas id="micanvas" width="500" height="500" style="border: 1px solid;
 	box-shadow: 0 0 20px #000;
 	background: #fff;">
 	Este texto se muestra para los navegadores no compatibles con canvas.
@@ -26,36 +26,58 @@
 	Por favor, utiliza Firefox, Chrome, Safari u Opera.
 </canvas>
 <div ng-controller="controlador1" >
-	altura:<input id="sli_alt" type="range" min="20" max="120" step="1" ng-model="alt">
+	altura:<input id="sli_alt" type="range" min="1" max="10" step="1" ng-model="alt">
 	{{alt}}<br>
-	ancho:<input id="Sli_anch" type="range" min="20" max="120" step="1" ng-model="anch">
+	ancho:<input id="Sli_anch" type="range" min="1" max="10" step="1" ng-model="anch">
 	{{anch}}
+	<br>ancho:{{long}}
+	<br>alto:{{altura}}
+	<div ng-repeat="columna in arr">
+	{{columna}}</div>
 	<br>{{arr}}
 </div>
 <script type="text/javascript">
-
 
 	var miAplicacion = angular.module( 'vida' , [] )
 	miAplicacion.controller ( 'controlador1' , [ '$scope' , function($scope){
 		var arr=new Array();
 		$scope.arr=arr
-		$scope.anch=25
-		$scope.alt=25
-
-		for (var i = 0; i< $scope.anch; i++) {
-			$scope.arr[i]=Math.floor(i);
-		}
-		$scope.changeSize = function(){
-
-			for (var i = 0; i< $scope.anch; i++) {
-				$scope.arr[i]=Math.floor(i);
-			}
-		}
-
-		$scope.$watch($scope.changeSize)
-
-
+		$scope.anch=5
+		$scope.alt=5
+		$scope.long=0//test
+		$scope.altura=0
 		
+		$scope.change_width = function(){
+			var temp=new Array()
+			//si disminuye el slice de anchura
+			if ($scope.arr.length>$scope.anch){
+				//si la anchura del array es mas grande que el slice
+				for (var i = $scope.arr.length - 1; i >= 0; i--) {
+					$scope.arr.pop()//pop elimina un elemento del array
+				}
+			} 
+			//si el slice aumenta aumentaremos el tama;o del array
+			else if($scope.arr.length<$scope.anch||$scope.arr[0].length<$scope.alt) {
+				//var j=0 para testeo del despliegue de columnas 
+				for (var i = 0; i< $scope.anch; i++) {
+					
+					temp=[]//limpia el array temporal
+					for (var j=0; j < $scope.alt; j++) {
+						temp[j]=j
+					}
+					$scope.arr[i]=temp
+				}
+			}
+			//si disminuye el slice de altura
+			else if($scope.arr[0].length>$scope.alt){
+					for (var i = 0; i< $scope.anch; i++) {
+						$scope.arr[i].pop()
+				}
+			}
+			$scope.long=$scope.arr.length//test
+			$scope.altura=$scope.arr[0].length//test
+		}
+		$scope.$watch($scope.change_width)
 	} ] )
 
 		//acaba angular inicia canvas
