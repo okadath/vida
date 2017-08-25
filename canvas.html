@@ -5,36 +5,58 @@
 	<script src="angular.min.js"></script>
 </head>
 <style type="text/css">
+	.contenedor-tabla{
+		display: table;
+		margin: 10px;
+		padding: 0px 0px 8px 0px;
+
+	}
+	.contenedor-fila{
+		display: table-row;
+	}
+	.contenedor-columna{
+		display: table-cell;
+		padding:20px;
+		background-color: #F8F2FD;
+
+	}
 	.contenedor{
 		box-sizing:border-box;
 		float:left;
 		width:50%;
 		padding:10px;
 	}
-	.lienzo{ 
-		border:1px solid #d9d9d9;  
-	}
-	#lienzo1{float:right;}
-	#lienzo2{width:50%;float:left;}
 </style>
 <body>
-	<canvas id="micanvas" width="500" height="500" style="border: 1px solid;
-	box-shadow: 0 0 20px #000;
-	background: #fff;">
-	Este texto se muestra para los navegadores no compatibles con canvas.
-	<br>
-	Por favor, utiliza Firefox, Chrome, Safari u Opera.
-</canvas>
-<div ng-controller="controlador1" >
-	altura:<input id="sli_alt" type="range" min="1" max="10" step="1" ng-model="alt">
-	{{alt}}<br>
-	ancho:<input id="Sli_anch" type="range" min="1" max="10" step="1" ng-model="anch">
-	{{anch}}
-	<br>ancho:{{long}}
-	<br>alto:{{altura}}
-	<div ng-repeat="columna in arr">
-	{{columna}}</div>
-	<br>{{arr}}
+<div class="contenedor-tabla">
+	<div class="contenedor-fila">
+	<div class="contenedor-columna">
+		Columna 1
+		<br>
+		<canvas id="micanvas" width="500" height="500" style="border: 1px solid;
+		box-shadow: 0 0 20px #000;
+		background: #fff;">
+		Este texto se muestra para los navegadores no compatibles con canvas.
+		<br>
+		Por favor, utiliza Firefox, Chrome, Safari u Opera.
+		</canvas>
+	</div>
+	<div class="contenedor-columna">
+		Columna 2
+		<br>
+		<div ng-controller="controlador1" >
+			dim x:<input id="sli_dim_x" type="range" min="1" max="50" step="1" ng-model="dim_x">
+			{{dim_x}}<br>
+			dim y:<input id="sli_dim_y" type="range" min="1" max="50" step="1" ng-model="dim_y">
+			{{dim_y}}
+			<div ng-repeat="columna in arr">
+				{{columna}}</div>
+			<br>
+				<button ng-click="randomize()">Random</button>
+			</div>
+			
+		</div>
+	</div>
 </div>
 <script type="text/javascript">
 
@@ -42,53 +64,85 @@
 	miAplicacion.controller ( 'controlador1' , [ '$scope' , function($scope){
 		var arr=new Array();
 		$scope.arr=arr
-		$scope.anch=5
-		$scope.alt=5
+		$scope.dim_y=8
+		$scope.dim_x=4
 		$scope.long=0//test
-		$scope.altura=0
-		
-		$scope.change_width = function(){
-			var temp=new Array()
-			//si disminuye el slice de anchura
-			if ($scope.arr.length>$scope.anch){
-				//si la anchura del array es mas grande que el slice
-				for (var i = $scope.arr.length - 1; i >= 0; i--) {
-					$scope.arr.pop()//pop elimina un elemento del array
-				}
-			} 
-			//si el slice aumenta aumentaremos el tama;o del array
-			else if($scope.arr.length<$scope.anch||$scope.arr[0].length<$scope.alt) {
-				//var j=0 para testeo del despliegue de columnas 
-				for (var i = 0; i< $scope.anch; i++) {
+		$scope.anchura=0
+
+		for (var i =0; i< $scope.dim_y; i++) {
 					
 					temp=[]//limpia el array temporal
-					for (var j=0; j < $scope.alt; j++) {
-						temp[j]=j
+					for (var j=0; j < $scope.dim_x; j++) {
+						temp[j]=0
 					}
 					$scope.arr[i]=temp
 				}
+
+
+		$scope.randomize=function(){
+			for (var i = 0; i< $scope.dim_y; i++) {
+					
+					temp=[]//limpia el array temporal
+					for (var j=0; j < $scope.dim_x; j++) {
+						temp[j]=getRandom()
+					}
+					$scope.arr[i]=temp
+				}
+		}
+		$scope.change_width = function(){
+			var temp=new Array()
+			//=====
+			//removemos del eje y
+			if ($scope.arr.length>$scope.dim_y){
+				for (var i = $scope.arr.length; i >$scope.dim_y; i--) {
+					$scope.arr.pop()
+				}
+			} //===========
+			//agregamos n filas en cero
+			else if($scope.arr.length<$scope.dim_y) {
+				for (var i = $scope.arr.length; i< $scope.dim_y; i++) {
+					
+					temp=[]//limpia el array temporal
+					for (var j=0; j < $scope.dim_x; j++) {
+						temp[j]=0
+					}
+					$scope.arr.push(temp)
+				}
+				
+			}//agregamos n ceros al final de cada fila
+			else if($scope.arr[0].length<$scope.dim_x) {
+				for (var i = 0; i< $scope.dim_y; i++) {
+					
+					//temp=[]//limpia el array temporal
+					for (var j=$scope.arr[i].length; j < $scope.dim_x; j++) {
+						$scope.arr[i].push(0)
+					}
+					
+				}
+				
 			}
-			//si disminuye el slice de altura
-			else if($scope.arr[0].length>$scope.alt){
-					for (var i = 0; i< $scope.anch; i++) {
+			//===============
+			//removemos del eje x
+			else if($scope.arr[0].length>$scope.dim_x){
+					for (var i = 0; i< $scope.dim_y; i++) {
 						$scope.arr[i].pop()
 				}
 			}
 			$scope.long=$scope.arr.length//test
-			$scope.altura=$scope.arr[0].length//test
+			$scope.anchura=$scope.arr[0].length//test
 		}
 		$scope.$watch($scope.change_width)
 	} ] )
 
-		//acaba angular inicia canvas
-		var canvas = document.getElementById('micanvas');
-		var contexto = canvas.getContext('2d');
 
-		contexto.fillStyle = '#D00000';
-		contexto.fillRect(0,0,30,20);
-		contexto.fillStyle='#000000'
-		contexto.fillStyle = 'rgb(16,214,85,0.8)';
-		contexto.fillRect(20,0,20,20);
+	//acaba angular inicia canvas
+	var canvas = document.getElementById('micanvas');
+	var contexto = canvas.getContext('2d');
+	contexto.fillStyle = '#D00000';
+	contexto.fillRect(0,0,30,20);
+	contexto.fillStyle='#000000'
+	contexto.fillStyle = 'rgb(16,214,85,0.8)';
+	contexto.fillRect(20,0,20,20);
 	//cambio el color a amarillo con un poco de transparencia
 	contexto.fillStyle = '#1500D0';
 	//dibuja linea
@@ -100,12 +154,9 @@
 	contexto.stroke();
 	//pinto un rectángulo amarillo semitransparente
 	contexto.fillRect(35,35,50,50);
-	
 	function getRandom() {
-		return Math.random();
+		 return Math.round(Math.random());
 	}
-
-
 </script>
 </body>
 </html>
