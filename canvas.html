@@ -9,7 +9,6 @@
 		display: table;
 		margin: 10px;
 		padding: 0px 0px 8px 0px;
-
 	}
 	.contenedor-fila{
 		display: table-row;
@@ -18,7 +17,6 @@
 		display: table-cell;
 		padding:20px;
 		background-color: #E3E3E3;
-
 	}
 	.contenedor{
 		box-sizing:border-box;
@@ -45,9 +43,9 @@
 		Columna 2
 		<br>
 		<div ng-controller="controlador1" >
-			dim x:<input id="sli_dim_x" type="range" min="1" max="50" step="1" ng-model="dim_x">
+			dim x:<input id="sli_dim_x" type="range" min="10" max="50" step="1" ng-model="dim_x">
 			{{dim_x}}<br>
-			dim y:<input id="sli_dim_y" type="range" min="1" max="50" step="1" ng-model="dim_y">
+			dim y:<input id="sli_dim_y" type="range" min="10" max="50" step="1" ng-model="dim_y">
 			{{dim_y}}
 			<div ng-repeat="columna in arr">
 				{{columna}}</div>
@@ -64,8 +62,8 @@
 	miAplicacion.controller ( 'controlador1' , [ '$scope' , function($scope){
 		var arr=new Array();
 		$scope.arr=arr
-		$scope.dim_y=8
-		$scope.dim_x=4
+		$scope.dim_y=15
+		$scope.dim_x=15
 		$scope.long=0//test
 		$scope.anchura=0
 
