@@ -1,166 +1,200 @@
 <!DOCTYPE html>
 <html ng-app="vida">
 <head><meta charset="utf-8">
-  <title></title>
-  <script src="angular.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	<title></title>
+	<script src="angular.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 </head>
 <body>
-  <style type="text/css">
-    .contenedor-tabla{
-      display: table;
-      margin: 10px;
-      padding: 0px 0px 8px 0px;
-    }
-    .contenedor-fila{
-      display: table-row;
-    }
-    .contenedor-columna{
-      display: table-cell;
-      padding:15px;
-      background-color: #E3E3E3;
-    }
-    .contenedor{
-      box-sizing:border-box;
-      float:left;
-      width:50%;
-      padding:8px;
-    }
-  </style>
-  <div class="contenedor-tabla">
-    <div class="contenedor-fila">
-      <div class="contenedor-columna">
-        <h4>Canvas</h4>
-        <canvas id="micanvas" style="border: 1px solid;
-        box-shadow: 0 0 20px #000;
-        background: #fff;">
-        Este texto se muestra para los navegadores no compatibles con canvas.
-        <br>
-        Por favor, utiliza Firefox, Chrome, Safari u Opera.
-      </canvas>
-    </div>
-    <div class="contenedor-columna">
-      <h4>Controles</h4>
-      <div ng-controller="controlador1" >
-        dim x:<input id="sli_dim_x" type="range" min="10" max="50" step="1" ng-model="dim_x">
-        {{dim_x}}<br>
-        dim y:<input id="sli_dim_y" type="range" min="10" max="50" step="1" ng-model="dim_y">
-        {{dim_y}}
-        <div ng-repeat="columna in arr">
-          {{columna}}</div>
-          <br>
-          <button ng-click="randomize()">Random</button>
-          <br>
-          <div>
-            <br>
-            <button type="button" data-ng-click="play()">Play</button>
-            <button type="button" data-ng-click="pause()">Pause</button>
-            <button type="button" data-ng-click="stopAnim()">Stop</button>
-          </div>
-        </div>
+	<style type="text/css">
+		.contenedor-tabla{
+			display: table;
+			margin: 10px;
+			padding: 0px 0px 8px 0px;
+		}
+		.contenedor-fila{
+			display: table-row;
+		}
+		.contenedor-columna{
+			display: table-cell;
+			padding:15px;
+			background-color: #E3E3E3;
+		}
+		.contenedor{
+			box-sizing:border-box;
+			float:left;
+			width:50%;
+			padding:8px;
+		}
+	</style>
+	<div class="contenedor-tabla">
+		<div class="contenedor-fila">
+			<div class="contenedor-columna">
+				<h4>Canvas</h4>
+				<canvas id="micanvas" style="border: 1px solid;
+				box-shadow: 0 0 20px #000;
+				background: #fff;">
+				Este texto se muestra para los navegadores no compatibles con canvas.
+				<br>
+				Por favor, utiliza Firefox, Chrome, Safari u Opera.
+			</canvas>
+		</div>
+		<div class="contenedor-columna">
+			<h4>Controles</h4>
+			<div ng-controller="controlador1" >
+				dim x:<input id="sli_dim_x" type="range" min="10" max="50" step="1" ng-model="dim_x">
+				{{dim_x}}<br>
+				dim y:<input id="sli_dim_y" type="range" min="10" max="50" step="1" ng-model="dim_y">
+				{{dim_y}}<br>
+				velocidad:<input id="vel" type="range" min="5" max="500" step="5" ng-model="vel" ng-change="changevel()">
+				{{vel}}
+				<div ng-repeat="columna in arr">
+					{{columna}}</div>
+					<br>meh:{{lastt}}<br>
+					<button ng-click="randomize()">Random</button>
+					<br>
+					<div>
+						<br>
+						<button type="button" data-ng-click="play()">Play</button>
+						<button type="button" data-ng-click="pause()">Pause</button>
+						<button type="button" data-ng-click="stopAnim()">Reset</button>
+					</div>
+				</div>
 
-      </div>
-    </div>
-  </div>
+			</div>
+		</div>
+	</div>
 
-  <script>
-    angular.module('vida', [])
-    .controller('controlador1', ['$scope', '$interval',
-      function($scope, $interval) {
+	<script>
+		angular.module('vida', [])
+		.controller('controlador1', ['$scope', '$interval',
+			function($scope, $interval) {
 
-        var arr=new Array();
-        $scope.arr=arr
-        $scope.dim_y=15
-        $scope.dim_x=15
+				var arr=new Array();
+				$scope.arr=arr
+				$scope.dim_y=15
+				$scope.dim_x=15
+				$scope.vel=20
+				$scope.playing=0
 
-        $scope.init=function(){
-          for (var i =0; i< $scope.dim_y; i++) {
+
+				$scope.init=function(){
+					for (var i =0; i< $scope.dim_y; i++) {
           temp=[]//limpia el array temporal
           for (var j=0; j < $scope.dim_x; j++) {
-            temp[j]=0
-            }
-          $scope.arr[i]=temp
-          }
-        }
-      $scope.init()
-
-      $scope.randomize=function(){
-        for (var i = 0; i< $scope.dim_y; i++) {
-          temp=[]//limpia el array temporal
-          for (var j=0; j < $scope.dim_x; j++) {
-            temp[j]=getRandom()
+          	temp[j]=0
           }
           $scope.arr[i]=temp
-        }
       }
-      $scope.change_width = function(){
-        var temp=new Array()
+
+  }
+  $scope.init()
+
+  $scope.randomize=function(){
+  	for (var i = 0; i< $scope.dim_y; i++) {
+          temp=[]//limpia el array temporal
+          for (var j=0; j < $scope.dim_x; j++) {
+          	temp[j]=getRandom()
+          }
+          $scope.arr[i]=temp
+      }
+  }
+  $scope.change_width = function(){
+  	var temp=new Array()
         //removemos del eje y
         if ($scope.arr.length>$scope.dim_y){
-        for (var i = $scope.arr.length; i >$scope.dim_y; i--) {
-          $scope.arr.pop()
+        	for (var i = $scope.arr.length; i >$scope.dim_y; i--) {
+        		$scope.arr.pop()
+        	}
         }
-      }
       //agregamos n filas en cero
       else if($scope.arr.length<$scope.dim_y) {
-        for (var i = $scope.arr.length; i< $scope.dim_y; i++) {
+      	for (var i = $scope.arr.length; i< $scope.dim_y; i++) {
 
           temp=[]//limpia el array temporal
           for (var j=0; j < $scope.dim_x; j++) {
-            temp[j]=0
+          	temp[j]=0
           }
           $scope.arr.push(temp)
-        }
+      }
       }//agregamos n ceros al final de cada fila
       else if($scope.arr[0].length<$scope.dim_x) {
-        for (var i = 0; i< $scope.dim_y; i++) {
+      	for (var i = 0; i< $scope.dim_y; i++) {
           //temp=[]//limpia el array temporal
           for (var j=$scope.arr[i].length; j < $scope.dim_x; j++) {
-            $scope.arr[i].push(0)
+          	$scope.arr[i].push(0)
           }        
-        }      
-      }
+      }      
+  }
       //removemos del eje x
       else if($scope.arr[0].length>$scope.dim_x){
-        for (var i = 0; i< $scope.dim_y; i++) {
-          $scope.arr[i].pop()
-        }
+      	for (var i = 0; i< $scope.dim_y; i++) {
+      		$scope.arr[i].pop()
+      	}
       }
       $scope.long=$scope.arr.length//test
       $scope.anchura=$scope.arr[0].length//test
-    }
-    $scope.$watch($scope.change_width)
 
-    var stop;
-    $scope.play = function() {
+      $scope.lastt=$scope.playing//$scope.arr[$scope.dim_y-1][$scope.dim_x-1]
+  }
+
+  $scope.$watch($scope.change_width)
+
+  var stop
+  $scope.changevel=function(){
+  if($scope.playing==1){
+  			if (angular.isDefined(stop)) {
+  		$interval.cancel(stop)
+  		stop = undefined
+  		//$scope.playing=0
+  		
+  	}
+  		$scope.play()
+  	}
+  else if ($scope.playing==0) {
+  		$scope.pause()
+  		$scope.playing=0
+  	}
+
+  }
+
+
+  $scope.play = function() {
       // Don't start a new play if we are already playing
       if ( angular.isDefined(stop) ) return;
       stop = $interval(function() {
-        $scope.randomize()
-      },70);
-    };
+      	$scope.randomize()//aqui va la funcion a evaluar en el tiempo
+      	$scope.playing=1
+      },$scope.vel)
+  }
 
-    $scope.pause = function() {
-      if (angular.isDefined(stop)) {
-        $interval.cancel(stop);
-        stop = undefined;
-      }
-    };
+  $scope.pause = function() {
+  	if (angular.isDefined(stop)) {
+  		$interval.cancel(stop)
+  		stop = undefined
+  		$scope.playing=0
+  		
+  	}
+  }
 
-    $scope.stopAnim = function() {
-      $scope.init()
-    };
+  $scope.stopAnim = function() {
+  	$scope.init()
+  };
 
-    $scope.$on('$destroy', function() {
+  $scope.$on('$destroy', function() {
       // Make sure that the interval is destroyed too
       $scope.pause();
-    });
-      }])
+  });
 
-    function getRandom() {
-     return Math.round(Math.random());
-   }
-</script>
+
+
+
+}])
+
+		function getRandom() {
+			return Math.round(Math.random());
+		}
+	</script>
 </body>
 </html>
