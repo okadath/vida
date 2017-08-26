@@ -18,8 +18,13 @@
 		}
 		.contenedor-columna{
 			display: table-cell;
-			padding:15px;
-			background-color: #E3E3E3;
+			padding:10px;
+			background-color: #DCFCE6;
+		}
+		.contenedor-columna2{
+			display: table-cell;
+			padding:4px;
+			background-color: #EADDF7;
 		}
 		.contenedor{
 			box-sizing:border-box;
@@ -27,6 +32,13 @@
 			width:50%;
 			padding:8px;
 		}
+
+		label.checkbox-label input[type=checkbox]{
+		    position: relative;
+		    vertical-align: text-bottom;
+		    bottom: 1px;
+		}
+		
 	</style>
 	<div class="contenedor-tabla">
 		<div class="contenedor-fila">
@@ -42,123 +54,172 @@
 		</div>
 		<div class="contenedor-columna">
 			<h4>Controles</h4>
+				
 			<div ng-controller="controlador1" >
-				dim x:<input id="sli_dim_x" type="range" min="10" max="50" step="1" ng-model="dim_x">
+
+
+
+<div class="contenedor-columna">
+<div class="contenedor-fila">
+<div class="contenedor-columna2">
+				<label class="checkbox-label"> 0 <input type="checkbox" value="0"> <input type="checkbox" value="0"></label><br>
+				<label class="checkbox-label"> 1 <input type="checkbox" value="1"> <input type="checkbox" value="1"></label><br>
+				<label class="checkbox-label"> 2 <input type="checkbox" value="2"> <input type="checkbox" value="2"></label><br>
+				<label class="checkbox-label"> 3 <input type="checkbox" value="3"> <input type="checkbox" value="3"></label><br>
+				<label class="checkbox-label"> 4 <input type="checkbox" value="4"> <input type="checkbox" value="4"></label><br>
+
+</div>
+
+
+<div class="contenedor-columna2">
+				
+				
+				<label class="checkbox-label"> 5 <input type="checkbox" value="5"> <input type="checkbox" value="5"></label><br>
+				<label class="checkbox-label"> 6 <input type="checkbox" value="6"> <input type="checkbox" value="6"></label><br>
+				<label class="checkbox-label"> 7 <input type="checkbox" value="7"> <input type="checkbox" value="7"></label><br>
+				<label class="checkbox-label"> 8 <input type="checkbox" value="8"> <input type="checkbox" value="8"></label><br>
+
+</div>
+
+<div class="contenedor-columna2">
+				
+			
+						
+						<button type="button" data-ng-click="play()" size="15px" style="line-height: 10px; font-size: 10pt">Play</button>
+						<button type="button" data-ng-click="pause()" style="line-height: 10px; font-size: 10pt">Pause</button><br>
+						<button type="button" data-ng-click="stopAnim()" style="line-height: 10px; font-size: 8pt">Reset</button>
+						<button ng-click="randomize()" size="15px" style="line-height: 10px; font-size: 8pt">Random</button>
+					<br>
+				
+
+</div>
+</div>
+
+
+
+</div>
+
+				dim x:<input id="sli_dim_x" type="range" min="5" max="50" step="1" ng-model="dim_x">
 				{{dim_x}}<br>
-				dim y:<input id="sli_dim_y" type="range" min="10" max="50" step="1" ng-model="dim_y">
+				dim y:<input id="sli_dim_y" type="range" min="5" max="50" step="1" ng-model="dim_y">
 				{{dim_y}}<br>
 				velocidad:<input id="vel" type="range" min="5" max="500" step="5" ng-model="vel" ng-change="changevel()">
 				{{vel}}
-				<div ng-repeat="columna in arr">
-					{{columna}}</div>
+				<div style="line-height: 10px; font-size: 8pt" ng-repeat="columna in arr">
+					{{columna}}</div><br>
+				<div style="line-height: 10px; font-size: 8pt" ng-repeat="columna2 in temp2">
+				{{columna2}}</div>
 					<br>meh:{{lastt}}<br>
-					<button ng-click="randomize()">Random</button>
-					<br>
-					<div>
-						<br>
-						<button type="button" data-ng-click="play()">Play</button>
-						<button type="button" data-ng-click="pause()">Pause</button>
-						<button type="button" data-ng-click="stopAnim()">Reset</button>
-					</div>
+					
+					
 				</div>
 
 			</div>
 		</div>
 	</div>
 
-	<script>
-		angular.module('vida', [])
-		.controller('controlador1', ['$scope', '$interval',
-			function($scope, $interval) {
+<script>
+	angular.module('vida', [])
+	.controller('controlador1', ['$scope', '$interval',
+	function($scope, $interval) {
 
-				var arr=new Array();
-				$scope.arr=arr
-				$scope.dim_y=15
-				$scope.dim_x=15
-				$scope.vel=20
-				$scope.playing=0
+	var arr=new Array()
+	$scope.arr=arr
+	$scope.temp2=new Array()
+	$scope.dim_y=5
+	$scope.dim_x=5
+	$scope.vel=20
+	$scope.playing=0
 
+	$scope.init=function(array_ini){
+		for (var i =0; i< $scope.dim_y; i++) {
+      	temp=[]//limpia el array temporal
+      	for (var j=0; j < $scope.dim_x; j++) {
+      	temp[j]=0
+      	}
+      	array_ini[i]=temp
+      	}
+      	return array_ini
+      	//$scope.temp2=$scope.arr
 
-				$scope.init=function(){
-					for (var i =0; i< $scope.dim_y; i++) {
-          temp=[]//limpia el array temporal
-          for (var j=0; j < $scope.dim_x; j++) {
-          	temp[j]=0
-          }
-          $scope.arr[i]=temp
-      }
+  	}
+  	$scope.arr=$scope.init($scope.arr)
+  	$scope.temp2=$scope.init($scope.temp2)
 
-  }
-  $scope.init()
-
-  $scope.randomize=function(){
-  	for (var i = 0; i< $scope.dim_y; i++) {
+  	$scope.randomize=function(){
+  		for (var i = 0; i< $scope.dim_y; i++) {
           temp=[]//limpia el array temporal
           for (var j=0; j < $scope.dim_x; j++) {
           	temp[j]=getRandom()
           }
           $scope.arr[i]=temp
-      }
-  }
-  $scope.change_width = function(){
-  	var temp=new Array()
-        //removemos del eje y
-        if ($scope.arr.length>$scope.dim_y){
-        	for (var i = $scope.arr.length; i >$scope.dim_y; i--) {
-        		$scope.arr.pop()
-        	}
-        }
-      //agregamos n filas en cero
-      else if($scope.arr.length<$scope.dim_y) {
-      	for (var i = $scope.arr.length; i< $scope.dim_y; i++) {
-
-          temp=[]//limpia el array temporal
-          for (var j=0; j < $scope.dim_x; j++) {
-          	temp[j]=0
-          }
-          $scope.arr.push(temp)
-      }
-      }//agregamos n ceros al final de cada fila
-      else if($scope.arr[0].length<$scope.dim_x) {
-      	for (var i = 0; i< $scope.dim_y; i++) {
-          //temp=[]//limpia el array temporal
-          for (var j=$scope.arr[i].length; j < $scope.dim_x; j++) {
-          	$scope.arr[i].push(0)
-          }        
-      }      
-  }
-      //removemos del eje x
-      else if($scope.arr[0].length>$scope.dim_x){
-      	for (var i = 0; i< $scope.dim_y; i++) {
-      		$scope.arr[i].pop()
       	}
-      }
-      $scope.long=$scope.arr.length//test
-      $scope.anchura=$scope.arr[0].length//test
+  	}
+	$scope.change_width = function(){
+		var temp=new Array()
+	    //removemos del eje y
+	    if ($scope.arr.length>$scope.dim_y){
+	    	for (var i = $scope.arr.length; i >$scope.dim_y; i--) {
+	    		$scope.arr.pop()
+	    	}
+	    }
+	  //agregamos n filas en cero
+	  else if($scope.arr.length<$scope.dim_y) {
+	  	for (var i = $scope.arr.length; i< $scope.dim_y; i++) {
+	      temp=[]//limpia el array temporal
+	      for (var j=0; j < $scope.dim_x; j++) {
+	      	temp[j]=0
+	      }
+	      $scope.arr.push(temp)
+	  	}
+	  }//agregamos n ceros al final de cada fila
+	  else if($scope.arr[0].length<$scope.dim_x) {
+	  		for (var i = 0; i< $scope.dim_y; i++) 	{
+	      //temp=[]//limpia el array temporal
+	      for (var j=$scope.arr[i].length; j < $scope.dim_x; j++) {
+	      	$scope.arr[i].push(0)
+	      	}        
+	  	 }      
+			}
+	  //removemos del eje x
+	  else if($scope.arr[0].length>$scope.dim_x){
+	  	for (var i = 0; i< $scope.dim_y; i++) {
+	  		$scope.arr[i].pop()
+	  	}
+	  }
+	  $scope.long=$scope.arr.length//test
+	  $scope.anchura=$scope.arr[0].length//test
 
-      $scope.lastt=$scope.playing//$scope.arr[$scope.dim_y-1][$scope.dim_x-1]
-  }
+	  $scope.lastt=$scope.playing//$scope.arr[$scope.dim_y-1][$scope.dim_x-1]
+	}
 
   $scope.$watch($scope.change_width)
 
   var stop
+
+  $scope.copiar=function (origen, destino) {
+		for (var y = 0; y < $scope.dim_y; y++) {
+			for (var x = 0; x < $scope.dim_x; x++) {
+			destino[y][x] = origen[y][x];
+  		}
+		}
+		return destino;
+	}
+
   $scope.changevel=function(){
-  if($scope.playing==1){
-  			if (angular.isDefined(stop)) {
+	  if($scope.playing==1){
+  		if (angular.isDefined(stop)) {
   		$interval.cancel(stop)
   		stop = undefined
-  		//$scope.playing=0
-  		
-  	}
-  		$scope.play()
-  	}
-  else if ($scope.playing==0) {
+  		//$scope.playing=0	
+	  	}
+	  	$scope.play()
+	  }
+	  else if ($scope.playing==0) {
   		$scope.pause()
   		$scope.playing=0
-  	}
-
-  }
-
+  		}
+	 }
 
   $scope.play = function() {
       // Don't start a new play if we are already playing
@@ -170,16 +231,18 @@
   }
 
   $scope.pause = function() {
-  	if (angular.isDefined(stop)) {
-  		$interval.cancel(stop)
-  		stop = undefined
-  		$scope.playing=0
-  		
-  	}
+  		if (angular.isDefined(stop)) {
+  			$interval.cancel(stop)
+  			stop = undefined
+  			$scope.playing=0	
+  		}
   }
 
   $scope.stopAnim = function() {
-  	$scope.init()
+  	$scope.temp2=[]
+  	$scope.init($scope.temp2)
+  	$scope.copiar($scope.arr,$scope.temp2)
+  	//$scope.init($scope.arr)
   };
 
   $scope.$on('$destroy', function() {
@@ -187,14 +250,62 @@
       $scope.pause();
   });
 
-
-
-
 }])
 
-		function getRandom() {
-			return Math.round(Math.random());
-		}
+		
+
+		// Recorre el tablero y calcula el nuevo estado de cada casilla.
+		// El nuevo estado lo deja en el tablero auxilar.
+		// Una vez se completa el nuevo estado en el tablero auxiliar,
+		// copia el tablero auxiliar al principal y muestra el tablero principal.
+		function eval(tablero, tablero_aux, max_x, max_y) {
+			
+			for (x = 0; x < max_x; x++) {
+				for (y = 0; y < max_y; y++) {
+
+					// Comprueba población alrededor.
+					casillas_on = 0;
+
+					if ( (x-1>=0) && (y-1>=0) && (tablero[x-1][y-1]==1) ) casillas_on++;
+					if ( (y-1>=0) && (tablero[x][y-1]==1) ) casillas_on++;
+					if ( (x+1<max_x) && (y-1>=0) && (tablero[x+1][y-1]==1) ) casillas_on++;
+					if ( (x-1>=0) && (tablero[x-1][y]==1) ) casillas_on++;
+					if ( (x+1<max_x) && (tablero[x+1][y]==1) ) casillas_on++;
+					if ( (x-1>=0) && (y+1<max_y) && (tablero[x-1][y+1]==1) ) casillas_on++;
+					if ( (y+1<max_y) && (tablero[x][y+1]==1) ) casillas_on++;
+					if ( (x+1<max_x) && (y+1<max_y) && (tablero[x+1][y+1]==1) ) casillas_on++;
+
+					// Condiciones de vida.
+					if (casillas_on<2) {		// Si alrededor hay menos de dos celdas vivas,
+						tablero_aux[x][y]=0;	// muere por escasa población.
+					}
+
+					else					
+
+					if (casillas_on>3) {		// Si alrededor hay más de tres celdas vivas,
+						tablero_aux[x][y]=0;	// muere por superporblación.
+					}
+
+					else 
+
+					if (casillas_on==3) {		// Si alrededor hay tres celdas vivas,
+						tablero_aux[x][y]=1;	// vive (sigue viviendo o se crea vida).
+					}
+
+		  		}
+  			}
+
+  			copiar (tablero_aux, tablero);
+
+  			//mostrar();
+  				
+  		}
+
+
+
+	function getRandom() {
+		return Math.round(Math.random());
+	}
 	</script>
 </body>
 </html>
