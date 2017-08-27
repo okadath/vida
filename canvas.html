@@ -86,9 +86,9 @@
 
 </div>
 
-				dim x:<input id="sli_dim_x" type="range" min="5" max="50" step="1" ng-model="dim_x" ng-change="change_width()">
+				dim x:<input id="sli_dim_x" type="range" min="5" max="50" step="1" ng-model="dim_x">
 				{{dim_x}}<br>
-				dim y:<input id="sli_dim_y" type="range" min="5" max="50" step="1" ng-model="dim_y" ng-change="change_width()">
+				dim y:<input id="sli_dim_y" type="range" min="5" max="50" step="1" ng-model="dim_y">
 				{{dim_y}}<br>
 				velocidad:<input id="vel" type="range" min="5" max="500" step="5" ng-model="vel" ng-change="changevel()">
 				{{vel}}
@@ -181,11 +181,9 @@
 	  $scope.anchura=$scope.arr[0].length//test
 
 	  $scope.lastt=$scope.playing//$scope.arr[$scope.dim_y-1][$scope.dim_x-1]
-	  $scope.temp2=$scope.arr
-	  $scope.init($scope.temp2)
 	}
 
-  //$scope.$watch($scope.change_width)
+  $scope.$watch($scope.change_width)
 
   var stop
 
