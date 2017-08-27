@@ -33,11 +33,11 @@
 			padding:8px;
 		}
 
-		label.checkbox-label input[type=checkbox]{
-		    position: relative;
-		    vertical-align: text-bottom;
-		    bottom: 1px;
-		}
+		/*label.checkbox-label input[type=checkbox]{
+		   
+		    vertical-align: text-top;
+		    padding:8px;
+		}*/
 		
 	</style>
 	<div class="contenedor-tabla">
@@ -57,51 +57,38 @@
 				
 			<div ng-controller="controlador1" >
 
-
-
 <div class="contenedor-columna">
 <div class="contenedor-fila">
 <div class="contenedor-columna2">
-				<label class="checkbox-label"> 0 <input type="checkbox" value="0"> <input type="checkbox" value="0"></label><br>
-				<label class="checkbox-label"> 1 <input type="checkbox" value="1"> <input type="checkbox" value="1"></label><br>
-				<label class="checkbox-label"> 2 <input type="checkbox" value="2"> <input type="checkbox" value="2"></label><br>
-				<label class="checkbox-label"> 3 <input type="checkbox" value="3"> <input type="checkbox" value="3"></label><br>
-				<label class="checkbox-label"> 4 <input type="checkbox" value="4"> <input type="checkbox" value="4"></label><br>
+				<label class="checkbox-label"> 0 <input type="checkbox" value="0"></label> <input type="checkbox" value="0"><br>
+				<label class="checkbox-label"> 1 <input type="checkbox" value="1"></label> <input type="checkbox" value="1"><br>
+				<label class="checkbox-label"> 2 <input type="checkbox" value="2"></label> <input type="checkbox" value="2"><br>
+				<label class="checkbox-label"> 3 <input type="checkbox" value="3"></label> <input type="checkbox" value="3"><br>
+				<label class="checkbox-label"> 4 <input type="checkbox" value="4"></label> <input type="checkbox" value="4"><br>
 
 </div>
 
-
-<div class="contenedor-columna2">
-				
-				
-				<label class="checkbox-label"> 5 <input type="checkbox" value="5"> <input type="checkbox" value="5"></label><br>
-				<label class="checkbox-label"> 6 <input type="checkbox" value="6"> <input type="checkbox" value="6"></label><br>
-				<label class="checkbox-label"> 7 <input type="checkbox" value="7"> <input type="checkbox" value="7"></label><br>
-				<label class="checkbox-label"> 8 <input type="checkbox" value="8"> <input type="checkbox" value="8"></label><br>
-
+<div class="contenedor-columna2">			
+				<label class="checkbox-label"> 5 <input type="checkbox" value="5"></label> <input type="checkbox" value="5"><br>
+				<label class="checkbox-label"> 6 <input type="checkbox" value="6"></label> <input type="checkbox" value="6"><br>
+				<label class="checkbox-label"> 7 <input type="checkbox" value="7"></label> <input type="checkbox" value="7"><br>
+				<label class="checkbox-label"> 8  <input type="checkbox" data-ng-model="confirmed" checked ></label> <input type="checkbox" name="bb" data-ng-model="confirmed2"><br>
+				{{confirmed}}   {{confirmed2}}
 </div>
-
 <div class="contenedor-columna2">
-				
-			
-						
-						<button type="button" data-ng-click="play()" size="15px" style="line-height: 10px; font-size: 10pt">Play</button>
+					<button type="button" data-ng-click="play()" size="15px" style="line-height: 10px; font-size: 10pt">Play</button>
 						<button type="button" data-ng-click="pause()" style="line-height: 10px; font-size: 10pt">Pause</button><br>
 						<button type="button" data-ng-click="stopAnim()" style="line-height: 10px; font-size: 8pt">Reset</button>
 						<button ng-click="randomize()" size="15px" style="line-height: 10px; font-size: 8pt">Random</button>
 					<br>
-				
-
 </div>
 </div>
 
-
-
 </div>
 
-				dim x:<input id="sli_dim_x" type="range" min="5" max="50" step="1" ng-model="dim_x">
+				dim x:<input id="sli_dim_x" type="range" min="5" max="50" step="1" ng-model="dim_x" ng-change="change_width()">
 				{{dim_x}}<br>
-				dim y:<input id="sli_dim_y" type="range" min="5" max="50" step="1" ng-model="dim_y">
+				dim y:<input id="sli_dim_y" type="range" min="5" max="50" step="1" ng-model="dim_y" ng-change="change_width()">
 				{{dim_y}}<br>
 				velocidad:<input id="vel" type="range" min="5" max="500" step="5" ng-model="vel" ng-change="changevel()">
 				{{vel}}
@@ -109,7 +96,7 @@
 					{{columna}}</div><br>
 				<div style="line-height: 10px; font-size: 8pt" ng-repeat="columna2 in temp2">
 				{{columna2}}</div>
-					<br>meh:{{lastt}}<br>
+					<br>meh:{{lastt}}<br>cas:{{casillas_on}}
 					
 					
 				</div>
@@ -128,8 +115,11 @@
 	$scope.temp2=new Array()
 	$scope.dim_y=5
 	$scope.dim_x=5
-	$scope.vel=20
+	$scope.vel=500
 	$scope.playing=0
+	$scope.confirmed=false
+	$scope.casillas_on=0;
+
 
 	$scope.init=function(array_ini){
 		for (var i =0; i< $scope.dim_y; i++) {
@@ -176,10 +166,10 @@
 	  else if($scope.arr[0].length<$scope.dim_x) {
 	  		for (var i = 0; i< $scope.dim_y; i++) 	{
 	      //temp=[]//limpia el array temporal
-	      for (var j=$scope.arr[i].length; j < $scope.dim_x; j++) {
-	      	$scope.arr[i].push(0)
-	      	}        
-	  	 }      
+		      for (var j=$scope.arr[i].length; j < $scope.dim_x; j++) {
+		      	$scope.arr[i].push(0)
+		      	}        
+		  	 }      
 			}
 	  //removemos del eje x
 	  else if($scope.arr[0].length>$scope.dim_x){
@@ -191,20 +181,13 @@
 	  $scope.anchura=$scope.arr[0].length//test
 
 	  $scope.lastt=$scope.playing//$scope.arr[$scope.dim_y-1][$scope.dim_x-1]
+	  $scope.temp2=$scope.arr
+	  $scope.init($scope.temp2)
 	}
 
-  $scope.$watch($scope.change_width)
+  //$scope.$watch($scope.change_width)
 
   var stop
-
-  $scope.copiar=function (origen, destino) {
-		for (var y = 0; y < $scope.dim_y; y++) {
-			for (var x = 0; x < $scope.dim_x; x++) {
-			destino[y][x] = origen[y][x];
-  		}
-		}
-		return destino;
-	}
 
   $scope.changevel=function(){
 	  if($scope.playing==1){
@@ -221,11 +204,57 @@
   		}
 	 }
 
+  $scope.copiar=function (origen, destino) {
+  
+		for (var y = 0; y < $scope.dim_y; y++) {
+			for (var x = 0; x < $scope.dim_x; x++) {
+			destino[y][x] = origen[y][x];
+  		}
+		}
+		return destino;
+	}
+
+$scope.eval=function(tablero,tablero_aux){
+	for(var y=0;y<$scope.dim_y;y++){
+		for(var x=0;x<$scope.dim_x;x++){
+		casillas_on=0;
+			
+		if ( (y-1>=0) && (x-1>=0) && (tablero[y-1][x-1]==1) ) casillas_on++;
+		if ( (x-1>=0) && (tablero[y][x-1]==1) ) casillas_on++;
+		if ( (y+1<$scope.dim_y) && (x-1>=0) && (tablero[y+1][x-1]==1) ) casillas_on++;
+		if ( (y-1>=0) && (tablero[y-1][x]==1) ) casillas_on++;
+		if ( (y+1<$scope.dim_y) && (tablero[y+1][x]==1) ) casillas_on++;
+		if ( (y-1>=0) && (x+1<$scope.dim_x) && (tablero[y-1][x+1]==1) ) casillas_on++;
+		if ( (x+1<$scope.dim_x) && (tablero[y][x+1]==1) ) casillas_on++;
+		if ( (y+1<$scope.dim_y) && (x+1<$scope.dim_x) && (tablero[y+1][x+1]==1) ) casillas_on++;
+
+		if (casillas_on<2) {		// Si alrededor hay menos de dos celdas vivas,
+			tablero_aux[y][x]=0;	// muere por escasa población.
+			}
+		else if (casillas_on>3) {		// Si alrededor hay más de tres celdas vivas,
+			tablero_aux[y][x]=0;	// muere por superporblación.
+			}
+
+		else if (casillas_on==3) {		// Si alrededor hay tres celdas vivas,
+			tablero_aux[y][x]=1;	// vive (sigue viviendo o se crea vida).
+			}
+
+		}
+	}
+	$scope.copiar(tablero_aux,tablero)
+
+}
+
   $scope.play = function() {
       // Don't start a new play if we are already playing
       if ( angular.isDefined(stop) ) return;
       stop = $interval(function() {
-      	$scope.randomize()//aqui va la funcion a evaluar en el tiempo
+      	$scope.eval($scope.arr, $scope.temp2)
+      	//$scope.randomize()//aqui va la funcion a evaluar en el tiempo
+      	//$scope.temp2=[]
+		//$scope.init($scope.temp2)
+		//$scope.copiar($scope.arr,$scope.temp2)
+
       	$scope.playing=1
       },$scope.vel)
   }
@@ -238,12 +267,12 @@
   		}
   }
 
-  $scope.stopAnim = function() {
-  	$scope.temp2=[]
-  	$scope.init($scope.temp2)
-  	$scope.copiar($scope.arr,$scope.temp2)
-  	//$scope.init($scope.arr)
-  };
+	$scope.stopAnim = function() {
+		$scope.temp2=[]
+		$scope.init($scope.temp2)
+		//$scope.copiar($scope.arr,$scope.temp2)
+		//$scope.init($scope.arr)
+	};
 
   $scope.$on('$destroy', function() {
       // Make sure that the interval is destroyed too
@@ -251,55 +280,6 @@
   });
 
 }])
-
-		
-
-		// Recorre el tablero y calcula el nuevo estado de cada casilla.
-		// El nuevo estado lo deja en el tablero auxilar.
-		// Una vez se completa el nuevo estado en el tablero auxiliar,
-		// copia el tablero auxiliar al principal y muestra el tablero principal.
-		function eval(tablero, tablero_aux, max_x, max_y) {
-			
-			for (x = 0; x < max_x; x++) {
-				for (y = 0; y < max_y; y++) {
-
-					// Comprueba población alrededor.
-					casillas_on = 0;
-
-					if ( (x-1>=0) && (y-1>=0) && (tablero[x-1][y-1]==1) ) casillas_on++;
-					if ( (y-1>=0) && (tablero[x][y-1]==1) ) casillas_on++;
-					if ( (x+1<max_x) && (y-1>=0) && (tablero[x+1][y-1]==1) ) casillas_on++;
-					if ( (x-1>=0) && (tablero[x-1][y]==1) ) casillas_on++;
-					if ( (x+1<max_x) && (tablero[x+1][y]==1) ) casillas_on++;
-					if ( (x-1>=0) && (y+1<max_y) && (tablero[x-1][y+1]==1) ) casillas_on++;
-					if ( (y+1<max_y) && (tablero[x][y+1]==1) ) casillas_on++;
-					if ( (x+1<max_x) && (y+1<max_y) && (tablero[x+1][y+1]==1) ) casillas_on++;
-
-					// Condiciones de vida.
-					if (casillas_on<2) {		// Si alrededor hay menos de dos celdas vivas,
-						tablero_aux[x][y]=0;	// muere por escasa población.
-					}
-
-					else					
-
-					if (casillas_on>3) {		// Si alrededor hay más de tres celdas vivas,
-						tablero_aux[x][y]=0;	// muere por superporblación.
-					}
-
-					else 
-
-					if (casillas_on==3) {		// Si alrededor hay tres celdas vivas,
-						tablero_aux[x][y]=1;	// vive (sigue viviendo o se crea vida).
-					}
-
-		  		}
-  			}
-
-  			copiar (tablero_aux, tablero);
-
-  			//mostrar();
-  				
-  		}
 
 
 
