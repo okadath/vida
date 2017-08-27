@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 </head>
-<body>
+<body onload="inicializarCanvas()">
 <style type="text/css">
 .contenedor-tabla{
 	display: table;
@@ -29,9 +29,11 @@
 .contenedor{
 	box-sizing:border-box;
 	float:left;
-	width:50%;
+	width:100%;
 	padding:8px;
 }
+#div_canvas{ width:100%; height:100%; margin:0 auto;}
+#canvas{border:1px solid #d9d9d9; width: 100%; height: 100%;}
 
 /*label.checkbox-label input[type=checkbox]{
    
@@ -42,9 +44,9 @@
 </style>
 <div class="contenedor-tabla">
 <div class="contenedor-fila">
-	<div class="contenedor-columna">
+	<div class="contenedor-columna" >
 		<h4>Canvas</h4>
-		<canvas id="micanvas" style="border: 1px solid;
+		<canvas id="canvas" style="border: 1px solid;
 		box-shadow: 0 0 20px #000;
 		background: #fff;">
 		Este texto se muestra para los navegadores no compatibles con canvas.
@@ -121,30 +123,30 @@ angular.module('vida', [])
 		$scope.casillas_on=0;
 
 
-	$scope.init=function(array_ini){
-		for (var i =0; i< $scope.dim_y; i++) {
-      	temp=[]//limpia el array temporal
-      	for (var j=0; j < $scope.dim_x; j++) {
-      		temp[j]=0
-      	}
-      	array_ini[i]=temp
-      }
-      return array_ini
-      	//$scope.temp2=$scope.arr
-
-      }
-      $scope.arr=$scope.init($scope.arr)
-      $scope.temp2=$scope.init($scope.temp2)
-
-      $scope.randomize=function(){
-      	for (var i = 0; i< $scope.dim_y; i++) {
-          temp=[]//limpia el array temporal
-          for (var j=0; j < $scope.dim_x; j++) {
-          	temp[j]=getRandom()
-          }
-          $scope.arr[i]=temp
-      }
+$scope.init=function(array_ini){
+	for (var i =0; i< $scope.dim_y; i++) {
+  	temp=[]//limpia el array temporal
+  	for (var j=0; j < $scope.dim_x; j++) {
+  		temp[j]=0
+  	}
+  	array_ini[i]=temp
   }
+  return array_ini
+  	//$scope.temp2=$scope.arr
+
+  }
+  $scope.arr=$scope.init($scope.arr)
+  $scope.temp2=$scope.init($scope.temp2)
+
+  $scope.randomize=function(){
+  		for (var i = 0; i< $scope.dim_y; i++) {
+      temp=[]//limpia el array temporal
+      for (var j=0; j < $scope.dim_x; j++) {
+      	temp[j]=getRandom()
+      }
+      $scope.arr[i]=temp
+  		}
+	}
 $scope.change_size = function(mi_arr){//funcion cambio de tama;o dinamicamente
   	var temp=new Array()
 	    //removemos del eje y
@@ -193,7 +195,7 @@ $scope.change_size = function(mi_arr){//funcion cambio de tama;o dinamicamente
 	}
 
 	//$scope.$watch($scope.change_size)//listener permanente...peligroso :'v
-
+//$scope.$watch(draw())
 	var stop
 	$scope.onchange=function(){//cuando cambia el slider dim_x odim_y agrega ceros a los arrays
 		$scope.change_size($scope.arr)
@@ -263,25 +265,27 @@ $scope.play = function() {
   if ( angular.isDefined(stop) ) return;
   stop = $interval(function() {
   	$scope.eval($scope.arr, $scope.temp2)
-  	draw()
+  	dibujarEnElCanvas(canvas.getContext("2d"),$scope.arr)
+  	//inicializarCanvas()//draw()
   	//$scope.randomize()//aqui va la funcion a evaluar en el tiempo
 	$scope.playing=1
 },$scope.vel)
 }
 
-  $scope.pause = function() {
-  	if (angular.isDefined(stop)) {
-  		$interval.cancel(stop)
-  		stop = undefined
-  		$scope.playing=0	
-  	}
-  }
+$scope.pause = function() {
+	if (angular.isDefined(stop)) {
+		$interval.cancel(stop)
+		stop = undefined
+		$scope.playing=0	
+		borra_canvas(canvas.getContext("2d"))
+	}
+}
 
-  $scope.stopAnim = function() {//resetea todo
-  	$scope.temp2=[]
-  	$scope.init($scope.arr)
-  	$scope.init($scope.temp2)
-	};
+$scope.stopAnim = function() {//resetea todo
+	$scope.temp2=[]
+	$scope.init($scope.arr)
+	$scope.init($scope.temp2)
+};
 
 	$scope.$on('$destroy', function() {
       // Make sure that the interval is destroyed too
@@ -293,6 +297,7 @@ $scope.play = function() {
 function getRandom() {
 	return Math.round(Math.random());
 }
+
 function draw(){//dibujo del canvas
 
     var canvas = document.getElementById('micanvas'); 
@@ -316,6 +321,70 @@ function draw(){//dibujo del canvas
   //pinto un rectángulo amarillo semitransparente 
   contexto.fillRect(35,35,50,50); 
 }
+
+	
+var canvas = document.querySelector("#canvas");
+var X,Y,W,H,r;              
+canvas.height = 650; 
+canvas.width = 850;
+function inicializarCanvas(){ 
+  if (canvas && canvas.getContext) {
+    var ctx = canvas.getContext("2d");
+        if (ctx) {
+			 var s = getComputedStyle(canvas);
+			 var w = s.width;
+			 var h = s.height;
+					
+			 W = canvas.width = w.split("px")[0];
+			 //la segunda igualacion es la retroalimentacion del tama;o del canvas 
+			 //en pixeles nuestro cargandole el tama;o desplegado en pantalla
+			 //como hay peque;as bvariaciones por la pantalla despliegue redondeo etc
+			 //entonces se produce un aumento hasta que deja de variar
+			 H = canvas.height = h.split("px")[0];
+			 
+			 X = Math.floor(W/2);
+			 Y = Math.floor(H/2);
+			 r = Math.floor(W/3);
+			   
+			 //dibujarEnElCanvas(ctx);
+			 }
+		}
+	}
+	  	   
+function dibujarEnElCanvas(ctx, array){
+	/*var canvas = document.querySelector("#canvas");
+	var s = getComputedStyle(canvas);
+	 var w = s.width;
+	 var h = s.height;
+	 W = canvas.width
+	 H = canvas.height */
+	 //para reutilizar la informacion sin errores eliminamos la doble igualacion de arriba
+	 //eliminamos los decimales
+	X = Math.floor(W);
+	Y = Math.floor(H);
+//X es el tama;o maximo del eje X
+//Y es el tama;o maximo del eje Y
+  ctx.strokeStyle = "#006400";
+//document.writeln(X+ " x " + Y);
+	ctx.fillStyle = "#6ab155";
+	ctx.fillRect(0,0,array.length,20);
+	ctx.lineWidth = 5;
+	ctx.arc(X/2,Y/2,r,0,2*Math.PI);
+	ctx.fill();
+	ctx.stroke();
+	var long_array=array.length;
+	var alt_array=array[0].length;
+	
+}
+
+function borra_canvas(ctx){ 	
+ctx.clearRect(0, 0, W, H);
+}  
+
+
+
+
+
 </script>
 </body>
 </html>
