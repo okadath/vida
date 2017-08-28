@@ -88,17 +88,14 @@
 
 		</div>
 
-		dim x:<input id="sli_dim_x" type="range" min="5" max="50" step="1" ng-model="dim_x" ng-change="onchange()">
+		dim x:<input id="sli_dim_x" type="range" min="5" max="100" step="1" ng-model="dim_x" ng-change="onchange()">
 		{{dim_x}}<br>
-		dim y:<input id="sli_dim_y" type="range" min="5" max="50" step="1" ng-model="dim_y" ng-change="onchange()">
+		dim y:<input id="sli_dim_y" type="range" min="5" max="100" step="1" ng-model="dim_y" ng-change="onchange()">
 		{{dim_y}}<br>
 		velocidad:<input id="vel" type="range" min="5" max="500" step="5" ng-model="vel" ng-change="changevel()">
 		{{vel}}
-		<div style="line-height: 10px; font-size: 8pt" ng-repeat="columna in arr">
-		{{columna}}</div><br>
-		<div style="line-height: 10px; font-size: 8pt" ng-repeat="columna2 in temp2">
-			{{columna2}}</div>
-			<br>meh:{{lastt}}<br>cas:{{casillas_on}}
+		
+			<br>playing:{{lastt}}<br>iter:{{iteraciones}}
 
 
 		</div>
@@ -108,6 +105,10 @@
 </div>
 
 <script>
+/*<div style="line-height: 10px; font-size: 8pt" ng-repeat="columna in arr">
+		{{columna}}</div><br>
+		<div style="line-height: 10px; font-size: 8pt" ng-repeat="columna2 in temp2">
+			{{columna2}}</div>*/
 angular.module('vida', [])
 .controller('controlador1', ['$scope', '$interval',
 	function($scope, $interval) {
@@ -119,8 +120,10 @@ angular.module('vida', [])
 		$scope.dim_x=5
 		$scope.vel=500
 		$scope.playing=0
+		$scope.lastt=$scope.playing
 		$scope.confirmed=false
-		$scope.casillas_on=0;
+		$scope.casillas_on=0
+		$scope.iteraciones=0
 
 
 $scope.init=function(array_ini){
@@ -176,13 +179,11 @@ $scope.change_size = function(mi_arr){//funcion cambio de tama;o dinamicamente
 	  //removemos del eje x n elementos
 	  else if(mi_arr[0].length>$scope.dim_x){
 	  	for (var i=0; i < $scope.dim_y; i++) 	{
-	  	for (var j=mi_arr[i].length; j >$scope.dim_x; j--) {
-	  	//for (var i = mi_arr.length; i >$scope.dim_y; i--) 
-	  	
-	      //temp=[]//limpia el array temporal
-	      
-	      	mi_arr[i].pop()
-	      }        
+		  	for (var j=mi_arr[i].length; j >$scope.dim_x; j--) {
+		  	//for (var i = mi_arr.length; i >$scope.dim_y; i--) 
+		      //temp=[]//limpia el array temporal
+		      	mi_arr[i].pop()
+		      }        
 	  }      
 
 	  	
@@ -190,7 +191,7 @@ $scope.change_size = function(mi_arr){//funcion cambio de tama;o dinamicamente
 	  $scope.long=mi_arr.length//test
 	  $scope.anchura=mi_arr[0].length//test
 
-	  $scope.lastt=$scope.playing//
+	  //$scope.lastt=$scope.playing//
 	  //mi_arr[$scope.dim_y-1][$scope.dim_x-1]//mas test
 	}
 
@@ -265,11 +266,13 @@ $scope.play = function() {
   if ( angular.isDefined(stop) ) return;
   stop = $interval(function() {
   	$scope.eval($scope.arr, $scope.temp2)
-  	dibujarEnElCanvas(canvas.getContext("2d"),$scope.arr)
+  	dibujarEnElCanvas(canvas.getContext("2d"),$scope.arr,$scope.vel)
   	//inicializarCanvas()//draw()
   	//$scope.randomize()//aqui va la funcion a evaluar en el tiempo
 	$scope.playing=1
-},$scope.vel)
+	$scope.iteraciones++
+	$scope.lastt=$scope.playing
+	},$scope.vel)
 }
 
 $scope.pause = function() {
@@ -277,7 +280,8 @@ $scope.pause = function() {
 		$interval.cancel(stop)
 		stop = undefined
 		$scope.playing=0	
-		borra_canvas(canvas.getContext("2d"))
+		//borra_canvas(canvas.getContext("2d"))
+		$scope.lastt=$scope.playing
 	}
 }
 
@@ -285,6 +289,7 @@ $scope.stopAnim = function() {//resetea todo
 	$scope.temp2=[]
 	$scope.init($scope.arr)
 	$scope.init($scope.temp2)
+	$scope.iteraciones=0
 };
 
 	$scope.$on('$destroy', function() {
@@ -298,60 +303,59 @@ function getRandom() {
 	return Math.round(Math.random());
 }
 
-function draw(){//dibujo del canvas
+function draw(){//dibujo del canvas para no olvidar funciones :v
 
-    var canvas = document.getElementById('micanvas'); 
-    var contexto = canvas.getContext('2d'); 
- 
-    contexto.fillStyle = '#D00000'; 
-    contexto.fillRect(0,0,30,20); 
-     contexto.fillRect(0,0,1700,1700); 
-    contexto.fillStyle='#000000' 
-    contexto.fillStyle = 'rgb(16,214,85,0.8)'; 
-    contexto.fillRect(20,0,20,20); 
-  //cambio el color a amarillo con un poco de transparencia 
-  contexto.fillStyle = '#1500D0'; 
-  //dibuja linea 
-  contexto.moveTo(0,20); 
-  contexto.lineTo(180,20); 
-  contexto.strokeStyle = 'rgb(0,0,0,1)'; 
-  contexto.moveTo(10,15); 
-  contexto.lineTo(180,15); 
-  contexto.stroke(); 
-  //pinto un rectángulo amarillo semitransparente 
-  contexto.fillRect(35,35,50,50); 
+	var canvas = document.getElementById('micanvas'); 
+	var contexto = canvas.getContext('2d'); 
+
+	contexto.fillStyle = '#D00000'; 
+	contexto.fillRect(0,0,30,20); 
+	 contexto.fillRect(0,0,1700,1700); 
+	contexto.fillStyle='#000000' 
+	contexto.fillStyle = 'rgb(16,214,85,0.8)'; 
+	contexto.fillRect(20,0,20,20); 
+	//cambio el color a amarillo con un poco de transparencia 
+	contexto.fillStyle = '#1500D0'; 
+	//dibuja linea 
+	contexto.moveTo(0,20); 
+	contexto.lineTo(180,20); 
+	contexto.strokeStyle = 'rgb(0,0,0,1)'; 
+	contexto.moveTo(10,15); 
+	contexto.lineTo(180,15); 
+	contexto.stroke(); 
+	//pinto un rectángulo amarillo semitransparente 
+	contexto.fillRect(35,35,50,50); 
 }
 
 	
 var canvas = document.querySelector("#canvas");
 var X,Y,W,H,r;              
-canvas.height = 650; 
+canvas.height = 600; 
 canvas.width = 850;
 function inicializarCanvas(){ 
   if (canvas && canvas.getContext) {
     var ctx = canvas.getContext("2d");
-        if (ctx) {
-			 var s = getComputedStyle(canvas);
-			 var w = s.width;
-			 var h = s.height;
-					
-			 W = canvas.width = w.split("px")[0];
-			 //la segunda igualacion es la retroalimentacion del tama;o del canvas 
-			 //en pixeles nuestro cargandole el tama;o desplegado en pantalla
-			 //como hay peque;as bvariaciones por la pantalla despliegue redondeo etc
-			 //entonces se produce un aumento hasta que deja de variar
-			 H = canvas.height = h.split("px")[0];
-			 
-			 X = Math.floor(W/2);
-			 Y = Math.floor(H/2);
-			 r = Math.floor(W/3);
-			   
-			 //dibujarEnElCanvas(ctx);
-			 }
-		}
+    if (ctx) {
+		 var s = getComputedStyle(canvas);
+		 var w = s.width;
+		 var h = s.height;
+		 //la segunda igualacion es la retroalimentacion del tama;o del canvas 
+		 //en pixeles nuestro cargandole el tama;o desplegado en pantalla
+		 //como hay peque;as bvariaciones por la pantalla despliegue redondeo etc
+		 //entonces se produce un aumento hasta que deja de variar
+		 W = canvas.width = w.split("px")[0];
+		 H = canvas.height = h.split("px")[0];
+		 X = Math.floor(W/2);
+		 Y = Math.floor(H/2);
+		 r = Math.floor(W/3);
+		   
+		 //dibujarEnElCanvas(ctx);
+		 }
 	}
-	  	   
-function dibujarEnElCanvas(ctx, array){
+	}
+	 
+var	 t=100; 	   
+function dibujarEnElCanvas(ctx, array,t){
 	/*var canvas = document.querySelector("#canvas");
 	var s = getComputedStyle(canvas);
 	 var w = s.width;
@@ -362,29 +366,46 @@ function dibujarEnElCanvas(ctx, array){
 	 //eliminamos los decimales
 	X = Math.floor(W);
 	Y = Math.floor(H);
-//X es el tama;o maximo del eje X
-//Y es el tama;o maximo del eje Y
-  ctx.strokeStyle = "#006400";
-//document.writeln(X+ " x " + Y);
-	ctx.fillStyle = "#6ab155";
-	ctx.fillRect(0,0,array.length,20);
-	ctx.lineWidth = 5;
-	ctx.arc(X/2,Y/2,r,0,2*Math.PI);
-	ctx.fill();
-	ctx.stroke();
-	var long_array=array.length;
-	var alt_array=array[0].length;
-	
+	//X es el tama;o maximo del eje X
+	//Y es el tama;o maximo del eje Y
+	var coord_x = 0;
+	var coord_y = 0;
+	// Los frames seran renderizados por este intervalo
+	// aproximadamente a 24 frames por segundo (fps)
+	//setInterval(function() {
+	// Limpiamos el canvas, eliminando el contenido
+	// desde el punto (0, 0) al punto (100, 100)
+	ctx.clearRect(0, 0, X, Y);    
+	// Generamos nuevas coordenadas
+	// Que basicamente representan un desplazamiento lineal
+	//x = x >= 100 ? 0 : x + 1;
+	//y = y >= 100 ? 0 : y + 1;
+	// Y dibujamos nuevamente
+	var d_x=Math.floor(X/array[0].length);
+	var d_y=Math.floor(Y/array.length);
+
+//recorremos el arreglo para evaluar el canvas
+
+	for (var y = 0; y < array.length; y++) {
+			coord_x=0;//inicia nueva fila del array y del canvas
+		for (var x = 0; x <array[0].length; x++) {
+			if(array[y][x]==1){//pinta cuadro negro
+				ctx.fillStyle = "#000000";
+				ctx.fillRect(coord_x,coord_y, d_x, d_y);
+			}
+			else{//pinta cuadro blanco "vacio"
+				ctx.fillStyle = "#FFFFFF";
+				ctx.fillRect(coord_x,coord_y, d_x, d_y);
+				}
+			coord_x=coord_x+d_x;
+		}coord_y=coord_y+d_y;
+	}
 }
 
-function borra_canvas(ctx){ 	
-ctx.clearRect(0, 0, W, H);
-}  
+	function borra_canvas(ctx){ 	
+	ctx.clearRect(0, 0, W, H);
+	}  
+	</script>
 
-
-
-
-
-</script>
 </body>
 </html>
