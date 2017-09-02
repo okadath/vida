@@ -2,46 +2,62 @@
 <html ng-app="vida">
 <head><meta charset="utf-8">
 	<title></title>
-	<script src="angular.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	<script src="js/angular.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
+	  <link rel="stylesheet" href="material-design-iconic-font.min.css">
+
+
+	  <link rel="stylesheet" href="css/onsenui.css"/>
+  <link rel="stylesheet" href="css/onsen-css-components.css"/>
+ 
+  <script src="js/onsenui.min.js"></script>
+  <script src="js/angular-onsenui.min.js"></script>
+  <script type="text/javascript">ons.platform.select('android');</script>
+   <script>
+    ons.bootstrap();
+  </script>
 </head>
 <body onload="inicializarCanvas()">
 <style type="text/css">
-.contenedor-tabla{
-	display: table;
-	margin: 10px;
-	padding: 0px 0px 8px 0px;
-}
-.contenedor-fila{
-	display: table-row;
-}
-.contenedor-columna{
-	display: table-cell;
-	padding:10px;
-	background-color: #DCFCE6;
-}
-.contenedor-columna2{
-	display: table-cell;
-	padding:4px;
-	background-color: #EADDF7;
-}
-.contenedor{
-	box-sizing:border-box;
-	float:left;
-	width:100%;
-	padding:8px;
-}
-#div_canvas{ width:100%; height:100%; margin:0 auto;}
-#canvas{border:1px solid #d9d9d9; width: 100%; height: 100%;}
+	.contenedor-tabla{
+		display: table;
+		margin: 10px;
+		padding: 0px 0px 8px 0px;
+	}
+	.contenedor-fila{
+		display: table-row;
+	}
+	.contenedor-columna{
+		display: table-cell;
+		padding:6px;
+		/*background-color: #ABFCF4;*/
+	}
+	.contenedor-columna2{
+		display: table-cell;
+		padding:4px;
+		background-color: #D5ECFC;
+	}
+	.contenedor{
+		box-sizing:border-box;
+		float:left;
+		width:100%;
+		padding:8px;
+	}
+	#div_canvas{ width:100%; height:100%; margin:0 auto;}
+	#canvas{border:1px solid #d9d9d9; width: 100%; height: 100%;}
 
-/*label.checkbox-label input[type=checkbox]{
-   
-    vertical-align: text-top;
-    padding:8px;
-}*/
+	/*label.checkbox-label input[type=checkbox]{
+	   
+	    vertical-align: text-top;
+	    padding:8px;
+	}*/
 
 </style>
+<ons-page ng-controller="controlador1" ng-init="">
+<ons-toolbar>
+      <div class="center">Life Game</div>
+    </ons-toolbar>
 <div class="contenedor-tabla">
 <div class="contenedor-fila">
 	<div class="contenedor-columna" >
@@ -62,6 +78,8 @@
 		<div class="contenedor-columna">
 		<div class="contenedor-fila">
 		<div class="contenedor-columna2">
+
+
 			<label class="checkbox-label"> 0 <input type="checkbox" value="0"></label> <input type="checkbox" value="0"><br>
 			<label class="checkbox-label"> 1 <input type="checkbox" value="1"></label> <input type="checkbox" value="1"><br>
 			<label class="checkbox-label"> 2 <input type="checkbox" value="2"></label> <input type="checkbox" value="2"><br>
@@ -76,40 +94,53 @@
 			<label class="checkbox-label"> 7 <input type="checkbox" value="7"></label> <input type="checkbox" value="7"><br>
 			<label class="checkbox-label"> 8  <input type="checkbox" data-ng-model="confirmed" checked ></label> <input type="checkbox" name="bb" data-ng-model="confirmed2"><br>
 			{{confirmed}}   {{confirmed2}}
+			<label class="checkbox checkbox--material">
+  <input type="checkbox" class="checkbox__input checkbox--material__input" checked="checked">
+  <div class="checkbox__checkmark checkbox--material__checkmark"></div>
+  ON
+</label>
 		</div>
-		<div class="contenedor-columna2">
-			<button type="button" data-ng-click="play()" size="15px" style="line-height: 10px; font-size: 10pt">Play</button>
-			<button type="button" data-ng-click="pause()" style="line-height: 10px; font-size: 10pt">Pause</button><br>
-			<button type="button" data-ng-click="stopAnim()" style="line-height: 10px; font-size: 8pt">Reset</button>
-			<button ng-click="randomize()" size="15px" style="line-height: 10px; font-size: 8pt">Random</button>
-			<br>
+		
 		</div>
-		</div>
-
 		</div>
 
-		dim x:<input id="sli_dim_x" type="range" min="5" max="100" step="1" ng-model="dim_x" ng-change="onchange()">
-		{{dim_x}}<br>
-		dim y:<input id="sli_dim_y" type="range" min="5" max="100" step="1" ng-model="dim_y" ng-change="onchange()">
-		{{dim_y}}<br>
-		velocidad:<input id="vel" type="range" min="5" max="500" step="5" ng-model="vel" ng-change="changevel()">
+		Dim x:
+		 <ons-range style="width: 50%;" min="5" max="120" step="5" ng-model="dim_x" ng-change="onchange()"></ons-range>
+		 {{dim_x}}<br>
+		Dim y: <ons-range style="width: 50%;" min="5" max="120" step="5" ng-model="dim_y" ng-change="onchange()"></ons-range>
+		 {{dim_y}}<br>
+		Speed:
+		<ons-range style="width: 50%;" min="5" max="400" step="5" ng-model="vel" ng-change="changevel()"></ons-range>
 		{{vel}}
 		
-			<br>playing:{{lastt}}<br>iter:{{iteraciones}}
+
+			<br>Playing:<span class="notification notification--material">{{lastt}}</span>
+			<br>Iter:<span class="notification notification--material">{{iteraciones}}</span>
 
 
+
+		<br><br>
+			<button type="button" class="button" data-ng-click="play()" size="15px" style="line-height: 10px; font-size: 8pt"><i class="zmdi zmdi-play zmdi-hc-2x"></i></button>
+			<button type="button" class="button" data-ng-click="pause()" style="line-height: 10px; font-size: 8pt"><i class="zmdi zmdi-pause zmdi-hc-2x"></i></button>
+			<button type="button" class="button" data-ng-click="stopAnim()" style="line-height: 10px; font-size: 8pt"><i class="zmdi zmdi-replay zmdi-hc-2x"></i></button>
+			<button class="button" ng-click="randomize()" size="15px" style="line-height: 10px; font-size: 8pt"><i class="zmdi zmdi-shuffle zmdi-hc-2x"></i></button>
+			<br>
 		</div>
+		
 
 		</div>
 	</div>
 </div>
+</ons-page>
 
 <script>
 /*<div style="line-height: 10px; font-size: 8pt" ng-repeat="columna in arr">
 		{{columna}}</div><br>
 		<div style="line-height: 10px; font-size: 8pt" ng-repeat="columna2 in temp2">
 			{{columna2}}</div>*/
-angular.module('vida', [])
+
+angular.module('vida', ['onsen'])
+
 .controller('controlador1', ['$scope', '$interval',
 	function($scope, $interval) {
 
@@ -149,6 +180,7 @@ $scope.init=function(array_ini){
       }
       $scope.arr[i]=temp
   		}
+  		dibujarEnElCanvas(canvas.getContext("2d"),$scope.arr,$scope.vel)
 	}
 $scope.change_size = function(mi_arr){//funcion cambio de tama;o dinamicamente
   	var temp=new Array()
@@ -201,6 +233,7 @@ $scope.change_size = function(mi_arr){//funcion cambio de tama;o dinamicamente
 	$scope.onchange=function(){//cuando cambia el slider dim_x odim_y agrega ceros a los arrays
 		$scope.change_size($scope.arr)
 		$scope.change_size($scope.temp2)
+		dibujarEnElCanvas(canvas.getContext("2d"),$scope.arr,$scope.vel)
 	}
 
 	$scope.changevel=function(){
@@ -209,14 +242,14 @@ $scope.change_size = function(mi_arr){//funcion cambio de tama;o dinamicamente
 			if (angular.isDefined(stop)) {
 				$interval.cancel(stop)
 				stop = undefined
-  		//$scope.playing=0	
-  	}
-  	$scope.play()
-  }
-  else if ($scope.playing==0) {
-  	$scope.pause()
-  	$scope.playing=0
-  }
+	  		//$scope.playing=0	
+	  	}
+	  	$scope.play()
+		  }
+		  else if ($scope.playing==0) {
+		  	$scope.pause()
+		  	$scope.playing=0
+		  }
 }
 
 $scope.copiar=function (origen, destino) {//copia array elemento por elemento
@@ -282,6 +315,7 @@ $scope.pause = function() {
 		$scope.playing=0	
 		//borra_canvas(canvas.getContext("2d"))
 		$scope.lastt=$scope.playing
+		dibujarEnElCanvas(canvas.getContext("2d"),$scope.arr,$scope.vel)
 	}
 }
 
@@ -290,6 +324,7 @@ $scope.stopAnim = function() {//resetea todo
 	$scope.init($scope.arr)
 	$scope.init($scope.temp2)
 	$scope.iteraciones=0
+	dibujarEnElCanvas(canvas.getContext("2d"),$scope.arr,$scope.vel)
 };
 
 	$scope.$on('$destroy', function() {
@@ -330,8 +365,8 @@ function draw(){//dibujo del canvas para no olvidar funciones :v
 	
 var canvas = document.querySelector("#canvas");
 var X,Y,W,H,r;              
-canvas.height = 600; 
-canvas.width = 850;
+canvas.height = 500; 
+canvas.width = 900;
 function inicializarCanvas(){ 
   if (canvas && canvas.getContext) {
     var ctx = canvas.getContext("2d");
